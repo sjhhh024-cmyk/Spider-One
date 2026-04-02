@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Crawling Employee"
+  short_description: "Autonomous website data collection worker"
+  default_prompt: "Use $web-crawling-employee to complete a website data collection task from a natural-language request."
