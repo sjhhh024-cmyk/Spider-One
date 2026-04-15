@@ -2,11 +2,11 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Build a runtime platform plus project-package contract for an AI-driven crawling system that uses Redis for runtime scheduling, SQLite for project-level task state, and MySQL for final business data only.
+**Goal:** Build a runtime platform plus project-package contract for an AI-driven crawling system that uses Redis for runtime scheduling, SQLite for project-level task state, `profile.yml` as the sole project configuration source, and MongoDB for final business data only.
 
-**Architecture:** The runtime provides shared orchestration, queueing, validation, and worker interfaces. Each project package contains site-specific collectors, parsers, validators, exporters, and a local SQLite task ledger so it can run both under the platform and as a standalone package.
+**Architecture:** The runtime provides shared orchestration, queueing, validation, and worker interfaces. Each project package contains a root `profile.yml`, site-specific collectors, parsers, validators, exporters, and a local SQLite task ledger so it can run both under the platform and as a standalone package.
 
-**Tech Stack:** Python 3.12, Redis, SQLite, MySQL, httpx, Playwright, optional Scrapy, pytest, ruff.
+**Tech Stack:** Python 3.12, Redis, SQLite, MongoDB, httpx, Playwright, optional Scrapy, pytest, ruff.
 
 ---
 
@@ -277,15 +277,14 @@ git commit -m "feat: add shared validators and exporters"
 
 **Files:**
 - Create: `projects/example-doctor-project/pyproject.toml`
-- Create: `projects/example-doctor-project/project.yaml`
+- Create: `projects/example-doctor-project/profile.yml`
 - Create: `projects/example-doctor-project/src/example_doctor_project/__init__.py`
 - Create: `projects/example-doctor-project/src/example_doctor_project/main.py`
 - Create: `projects/example-doctor-project/src/example_doctor_project/cli.py`
 - Create: `projects/example-doctor-project/src/example_doctor_project/config/settings.py`
-- Create: `projects/example-doctor-project/src/example_doctor_project/profiles/site_profile.yaml`
 - Create: `projects/example-doctor-project/src/example_doctor_project/collectors/list_collector.py`
 - Create: `projects/example-doctor-project/src/example_doctor_project/parsers/list_parser.py`
-- Create: `projects/example-doctor-project/src/example_doctor_project/pipelines/write_mysql.py`
+- Create: `projects/example-doctor-project/src/example_doctor_project/pipelines/write_mongodb.py`
 - Create: `projects/example-doctor-project/state/.gitkeep`
 - Create: `projects/example-doctor-project/artifacts/.gitkeep`
 - Create: `projects/example-doctor-project/outputs/.gitkeep`
@@ -304,7 +303,7 @@ Expected: FAIL because the project package does not exist.
 
 **Step 3: Write minimal implementation**
 
-Scaffold the project package so it can run standalone while depending only on runtime contracts.
+Scaffold the project package so it can run standalone while depending only on runtime contracts, and make `profile.yml` the single runtime configuration file for Redis, MongoDB, proxy, and worker settings.
 
 **Step 4: Run test to verify it passes**
 
@@ -318,34 +317,34 @@ git add projects/example-doctor-project
 git commit -m "feat: scaffold standalone example project package"
 ```
 
-### Task 10: Add MySQL result writing and integration verification
+### Task 10: Add MongoDB result writing and integration verification
 
 **Files:**
-- Modify: `projects/example-doctor-project/src/example_doctor_project/pipelines/write_mysql.py`
-- Create: `runtime/tests/test_mysql_result_writer.py`
+- Modify: `projects/example-doctor-project/src/example_doctor_project/pipelines/write_mongodb.py`
+- Create: `runtime/tests/test_mongodb_result_writer.py`
 - Create: `projects/example-doctor-project/tests/test_project_flow.py`
 
 **Step 1: Write the failing test**
 
-Create tests that validate only final business records are written through the result writer, not task-state records.
+Create tests that validate only final business records are written through the MongoDB result writer, not task-state records.
 
 **Step 2: Run test to verify it fails**
 
-Run: `pytest runtime/tests/test_mysql_result_writer.py projects/example-doctor-project/tests/test_project_flow.py -q`
-Expected: FAIL because MySQL result writing and project flow are not implemented.
+Run: `pytest runtime/tests/test_mongodb_result_writer.py projects/example-doctor-project/tests/test_project_flow.py -q`
+Expected: FAIL because MongoDB result writing and project flow are not implemented.
 
 **Step 3: Write minimal implementation**
 
-Implement final-result persistence and a narrow end-to-end project flow using the runtime contracts.
+Implement final-result persistence to MongoDB and a narrow end-to-end project flow using the runtime contracts.
 
 **Step 4: Run test to verify it passes**
 
-Run: `pytest runtime/tests/test_mysql_result_writer.py projects/example-doctor-project/tests/test_project_flow.py -q`
+Run: `pytest runtime/tests/test_mongodb_result_writer.py projects/example-doctor-project/tests/test_project_flow.py -q`
 Expected: PASS.
 
 **Step 5: Commit**
 
 ```bash
-git add runtime/tests/test_mysql_result_writer.py projects/example-doctor-project/tests/test_project_flow.py projects/example-doctor-project/src/example_doctor_project/pipelines/write_mysql.py
-git commit -m "feat: add mysql result writer and project flow"
+git add runtime/tests/test_mongodb_result_writer.py projects/example-doctor-project/tests/test_project_flow.py projects/example-doctor-project/src/example_doctor_project/pipelines/write_mongodb.py
+git commit -m "feat: add mongodb result writer and project flow"
 ```

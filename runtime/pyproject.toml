@@ -3,6 +3,7 @@ name = "crawler-runtime"
 version = "0.1.0"
 description = "Shared runtime for task-driven crawling projects."
 requires-python = ">=3.12"
+dependencies = ["PyYAML>=6,<7"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

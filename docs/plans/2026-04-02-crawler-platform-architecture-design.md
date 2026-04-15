@@ -7,7 +7,8 @@
 **设计原则**
 
 - 平台和项目解耦：平台只负责共性能力，项目只负责站点个性。
-- MySQL 只存最终业务数据，不承担任务状态。
+- MongoDB 只存最终业务数据，不承担任务状态。
+- 项目配置统一放在 `profile.yml`，包含 Redis、MongoDB、代理和运行参数。
 - Redis 负责运行时调度，SQLite 负责项目级事实账本。
 - 项目包必须独立可执行。
 - 代码边界清晰，遵守 Python 官方风格，优先人类可读性和后续变更成本。
@@ -22,7 +23,7 @@ User
   -> Workers
   -> Project Package
   -> SQLite / Artifacts / Outputs
-  -> MySQL
+  -> MongoDB
 ```
 
 可拆成三层：
@@ -82,16 +83,16 @@ User
 
 SQLite 的价值在于：即使 Redis 被清空、进程崩溃或机器重启，项目也能恢复到已知状态继续执行。
 
-### MySQL：最终业务数据
+### MongoDB：最终业务数据
 
 职责明确为“最终采集数据”：
 
-- doctor
-- hospital
-- department
-- relation tables
+- doctor collection
+- hospital collection
+- department collection
+- relation-like embedded or referenced documents
 
-MySQL 不承载运行态任务表，这样业务库保持干净，后续给分析、业务或下游系统使用时不会混入调度噪音。
+MongoDB 不承载运行态任务表，这样结果库保持干净，后续给分析、业务或下游系统使用时不会混入调度噪音。
 
 ## 4. 任务模型
 
@@ -199,7 +200,7 @@ Redis 只保留执行窗口，SQLite 保存任务事实。恢复流程为：
 2. 重新灌入 Redis
 3. worker 继续消费
 4. 成功后写回 SQLite 和产物目录
-5. 结构化结果写入 MySQL
+5. 结构化结果写入 MongoDB
 
 ## 9. 首版范围建议
 
@@ -210,7 +211,7 @@ Redis 只保留执行窗口，SQLite 保存任务事实。恢复流程为：
 - Redis 调度
 - http worker
 - browser worker
-- MySQL 结果写入
+- MongoDB 结果写入
 - 基础 validator / exporter
 
 `scrapy worker` 和 `reverse worker` 放第二阶段接入。先把任务流、状态流和数据流跑顺，比先做全功能更重要。
@@ -228,4 +229,4 @@ Redis 只保留执行窗口，SQLite 保存任务事实。恢复流程为：
 
 在你当前已知条件下，推荐技术组合是：
 
-`Python 3.12 + Redis + SQLite + MySQL + httpx + Playwright + Scrapy + pytest + ruff`
+`Python 3.12 + Redis + SQLite + MongoDB + httpx + Playwright + Scrapy + pytest + ruff`

@@ -1,0 +1,39 @@
+{
+  "date": "2026-04-14",
+  "list_endpoint": "https://api-gateway.allinmd.cn/live-service/pcd/live/activity/getAllActivityPageInfo",
+  "detail_endpoint": "https://api-gateway.allinmd.cn/live-service/meeting/activity/getActivityDetail",
+  "list_total_count": 2365,
+  "list_total_page_count": 237,
+  "sample_rule": "每10页抽取1条首记录，共24条样本",
+  "sample_summary": {
+    "sampled_pages": 24,
+    "with_doctor_list": 21,
+    "zero_doctor_list": 3
+  },
+  "samples": [
+    { "page": 1, "activityId": 3533, "status": 20, "doctorCount": 4 },
+    { "page": 11, "activityId": 3429, "status": 70, "doctorCount": 4 },
+    { "page": 21, "activityId": 3336, "status": 60, "doctorCount": 7 },
+    { "page": 31, "activityId": 3235, "status": 70, "doctorCount": 3 },
+    { "page": 41, "activityId": 3069, "status": 70, "doctorCount": 3 },
+    { "page": 51, "activityId": 2943, "status": 60, "doctorCount": 10 },
+    { "page": 61, "activityId": 2837, "status": 60, "doctorCount": 1 },
+    { "page": 71, "activityId": 2720, "status": 70, "doctorCount": 4 },
+    { "page": 81, "activityId": 2605, "status": 70, "doctorCount": 4 },
+    { "page": 91, "activityId": 2485, "status": 70, "doctorCount": 1 },
+    { "page": 101, "activityId": 2375, "status": 70, "doctorCount": 0 },
+    { "page": 111, "activityId": 2218, "status": 70, "doctorCount": 2 },
+    { "page": 121, "activityId": 2091, "status": 70, "doctorCount": 9 },
+    { "page": 131, "activityId": 1911, "status": 70, "doctorCount": 8 },
+    { "page": 141, "activityId": 1781, "status": 70, "doctorCount": 6 },
+    { "page": 151, "activityId": 1650, "status": 70, "doctorCount": 9 },
+    { "page": 161, "activityId": 1521, "status": 70, "doctorCount": 1 },
+    { "page": 171, "activityId": 1376, "status": 70, "doctorCount": 7 },
+    { "page": 181, "activityId": 1241, "status": 70, "doctorCount": 9 },
+    { "page": 191, "activityId": 1124, "status": 70, "doctorCount": 6 },
+    { "page": 201, "activityId": 992, "status": 70, "doctorCount": 1 },
+    { "page": 211, "activityId": 714, "status": 70, "doctorCount": 1 },
+    { "page": 221, "activityId": 346, "status": 70, "doctorCount": 0 },
+    { "page": 231, "activityId": 442, "status": 70, "doctorCount": 0 }
+  ]
+}

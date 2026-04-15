@@ -1,3 +1,9 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+profile.yml
+**/profile.yml
+projects/*/outputs/*.json
+projects/*/outputs/*.jsonl
+projects/*/exports/*.json
+projects/*/logs/*.log

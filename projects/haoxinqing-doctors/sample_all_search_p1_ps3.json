@@ -1,0 +1,27 @@
+{
+  "request_url": "https://papi.haoxinqing.cn/papi/pcWeb/allSearch?pn=1&ps=3",
+  "description": "好心情 allSearch 接口单层入库样本，当前写库时使用 _id = doctor_id。",
+  "samples": [
+    {
+      "_id": "197645",
+      "doctor_id": "197645",
+      "name": "魏志杰",
+      "hospital_name": "遵义医科大学附属医院",
+      "department_name": "心理精神科",
+      "title": "副主任医师",
+      "avatar_url": "https://online-file.haoxinqing.cn/data/hxq/online/doctorHeadPath/20221010/15CD6AE2-4A4A-45DB-972A-E53F57770EB3.jpg",
+      "profile_url": "https://www.haoxinqing.cn/doctor/197645.html",
+      "territory": "擅长焦虑抑郁、睡眠障碍、双相情感障碍、强迫症、青少年学习及社交障碍等多种神经精神系统常见病、多发病以及疑难病、罕见病的诊治。",
+      "intro": "魏志杰，遵义医科大学附属医院精神心理科，副主任医师，临床医学博士，贵州省高层次人才团队成员。",
+      "disease_names": "焦虑障碍,恐惧症,强迫症",
+      "city_id": 520300,
+      "province_id": 520000,
+      "hospital_id_hxq": "15055",
+      "department_id_hxq": "1568",
+      "evaluation_score": 100,
+      "source_site": "好心情",
+      "source_url": "https://papi.haoxinqing.cn/papi/pcWeb/allSearch?pn=1&ps=3",
+      "grab_data": "2026-04-07"
+    }
+  ]
+}

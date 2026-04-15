@@ -1,4 +1,4 @@
 interface:
-  display_name: "Web Crawling Employee"
-  short_description: "Autonomous website data collection worker"
-  default_prompt: "Use $web-crawling-employee to complete a website data collection task from a natural-language request."
+  display_name: "网站采集员工"
+  short_description: "自主完成网站数据采集任务"
+  default_prompt: "使用 $web-crawling-employee 完成一个由自然语言驱动的网站数据采集任务。"

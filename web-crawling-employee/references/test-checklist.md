@@ -48,6 +48,16 @@ Use this checklist before claiming the crawl works. A collector is not done just
 - Confirm the output format matches the current task brief.
 - Include coverage notes: which pages, filters, cities, or departments were included.
 - Include known gaps and failed IDs or URLs when coverage is partial.
+- Confirm the console logs are readable by a human, not just by the program.
+- Confirm the console logs show page progress, request target, raw count, deduped count, and write result.
+- Confirm the console logs print the actual write fields for at least one sample record, one field per line.
+- If the project has staged spiders or a single start entry, confirm one stage can finish and hand off to the next instead of hanging idle forever.
+
+## 8. Runtime Readiness Test
+
+- If Redis is behind an SSH tunnel, confirm the start script or operator steps make the tunnel explicit.
+- Confirm the main entry checks key dependencies early when possible, such as Redis reachability before opening a distributed crawl.
+- On Windows, confirm `scrapy.cfg` and other bootstrap config files do not contain encoding pitfalls that stop Scrapy before crawling starts.
 
 ## Validator Script
 
