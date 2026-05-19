@@ -11,13 +11,15 @@ class MongoPipeline:
 
     required_fields = ("doctor_name", "hospital_name", "department_name")
 
-    def __init__(self, mongo_uri, mongo_database, collection_name):
+    def __init__(self, mongo_uri, mongo_database, collection_name, hospital_collection_name=None):
         self.mongo_uri = mongo_uri
         self.mongo_database = mongo_database
         self.collection_name = collection_name
+        self.hospital_collection_name = hospital_collection_name
         self.client = None
         self.database = None
         self.collection = None
+        self.hospital_collection = None
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -25,12 +27,15 @@ class MongoPipeline:
             mongo_uri=crawler.settings.get("MONGO_URI"),
             mongo_database=crawler.settings.get("MONGO_DATABASE"),
             collection_name=crawler.settings.get("MONGO_DOCTOR_COLLECTION"),
+            hospital_collection_name=crawler.settings.get("MONGO_HOSPITAL_COLLECTION"),
         )
 
     def open_spider(self, spider):
         self.client = MongoClient(self.mongo_uri)
         self.database = self.client[self.mongo_database]
         self.collection = self.database[self.collection_name]
+        if self.hospital_collection_name:
+            self.hospital_collection = self.database[self.hospital_collection_name]
 
     def close_spider(self, spider):
         if self.client:
@@ -46,6 +51,12 @@ class MongoPipeline:
 
     def process_item(self, item, spider):
         document = dict(item)
+        if str(document.get("item_type") or "").strip() == "hospital":
+            collection = self.hospital_collection or self.collection
+            collection.replace_one({"_id": document["_id"]}, document, upsert=True)
+            spider.logger.info("WYGK hospital 入库成功: %s", item.get("_id", ""))
+            return item
+
         self.validate_required_fields(document)
         self.collection.replace_one({"_id": document["_id"]}, document, upsert=True)
         spider.logger.info("WYGK 入库成功: %s", item.get("_id", ""))

@@ -14,17 +14,59 @@ from doctor_wygk.request_builders import (
 )
 
 
-def _normalize_string_list(value: object) -> list[str]:
+def _normalize_string_list(value: object) -> str:
     if isinstance(value, list):
-        return [str(item).strip() for item in value if str(item).strip()]
-    text = str(value or "").strip()
-    return [text] if text else []
+        values = [str(item).strip() for item in value if str(item).strip()]
+        return ",".join(values)
+    return str(value or "").strip()
 
 
-def _normalize_object_list(value: object) -> list[dict[str, object]]:
+def _normalize_object_list(value: object, *, field_order: tuple[str, ...]) -> str:
+    if isinstance(value, str):
+        return value.strip()
     if not isinstance(value, list):
-        return []
-    return [item for item in value if isinstance(item, dict)]
+        return ""
+
+    normalized_rows: list[str] = []
+    for item in value:
+        if isinstance(item, dict):
+            parts = [str(item.get(field) or "").strip() for field in field_order]
+            row = " ".join(part for part in parts if part)
+        else:
+            row = str(item).strip()
+        if row:
+            normalized_rows.append(row)
+    return ",".join(normalized_rows)
+
+
+def _parse_hospital_tags(value: object) -> tuple[str, str, str]:
+    tags: list[str]
+    if isinstance(value, list):
+        tags = [str(item).strip() for item in value if str(item).strip()]
+    else:
+        tags = _split_names(value)
+
+    hospital_level = ""
+    hospital_nature = ""
+    hospital_type = ""
+
+    level_mapping = {
+        "三级甲等": "三甲医院",
+        "三级乙等": "三乙医院",
+        "二级甲等": "二甲医院",
+        "二级乙等": "二乙医院",
+    }
+    for tag in tags:
+        normalized_tag = level_mapping.get(tag, tag)
+        if not hospital_level and ("级" in tag or "甲等" in tag or "乙等" in tag):
+            hospital_level = normalized_tag
+            continue
+        if not hospital_nature and any(keyword in tag for keyword in ("公立", "私立", "民营")):
+            hospital_nature = tag
+            continue
+        if not hospital_type:
+            hospital_type = tag
+    return hospital_level, hospital_nature, hospital_type
 
 
 def merge_doctor_detail(
@@ -100,10 +142,12 @@ def merge_doctor_detail(
             detail_fields.get("doctor_illnesses") or normalized_context.get("doctor_illnesses")
         ),
         "doctor_social_titles": _normalize_object_list(
-            detail_fields.get("doctor_social_titles") or normalized_context.get("doctor_social_titles")
+            detail_fields.get("doctor_social_titles") or normalized_context.get("doctor_social_titles"),
+            field_order=("organization", "social_title", "start_date", "end_date"),
         ),
         "doctor_honors": _normalize_object_list(
-            detail_fields.get("doctor_honors") or normalized_context.get("doctor_honors")
+            detail_fields.get("doctor_honors") or normalized_context.get("doctor_honors"),
+            field_order=("honor_name", "award_department", "award_date"),
         ),
         "doctor_academic_achievements": _normalize_string_list(
             detail_fields.get("doctor_academic_achievements")
@@ -115,29 +159,75 @@ def merge_doctor_detail(
         ),
         "doctor_work_experiences": _normalize_object_list(
             detail_fields.get("doctor_work_experiences")
-            or normalized_context.get("doctor_work_experiences")
+            or normalized_context.get("doctor_work_experiences"),
+            field_order=("organization", "department_name", "doctor_title", "start_date", "end_date"),
         ),
         "doctor_educations": _normalize_object_list(
-            detail_fields.get("doctor_educations") or normalized_context.get("doctor_educations")
+            detail_fields.get("doctor_educations") or normalized_context.get("doctor_educations"),
+            field_order=("school_name", "major_name", "education_name", "start_date", "end_date"),
         ),
         "doctor_continuing_educations": _normalize_object_list(
             detail_fields.get("doctor_continuing_educations")
-            or normalized_context.get("doctor_continuing_educations")
+            or normalized_context.get("doctor_continuing_educations"),
+            field_order=("organization", "certificate_name", "address", "start_date", "end_date"),
         ),
         "doctor_funds": _normalize_object_list(
-            detail_fields.get("doctor_funds") or normalized_context.get("doctor_funds")
+            detail_fields.get("doctor_funds") or normalized_context.get("doctor_funds"),
+            field_order=("fund_name", "fund_code", "approval_date"),
         ),
         "doctor_opuses": _normalize_object_list(
-            detail_fields.get("doctor_opuses") or normalized_context.get("doctor_opuses")
+            detail_fields.get("doctor_opuses") or normalized_context.get("doctor_opuses"),
+            field_order=("opus_name", "publisher", "publication_date", "author_type"),
         ),
         "doctor_patents": _normalize_object_list(
-            detail_fields.get("doctor_patents") or normalized_context.get("doctor_patents")
+            detail_fields.get("doctor_patents") or normalized_context.get("doctor_patents"),
+            field_order=("patent_name", "patent_code", "patent_date", "country"),
         ),
         "doctor_big_events": _normalize_string_list(
             detail_fields.get("doctor_big_events") or normalized_context.get("doctor_big_events")
         ),
         "website": "唯医骨科",
         "source_url": source_url,
+        "crawl_time": datetime.now().strftime("%Y-%m-%d"),
+    }
+
+
+def merge_hospital_detail(hospital_fields: dict[str, object]) -> dict[str, object]:
+    hospital_id = str(
+        hospital_fields.get("hospital_id") or hospital_fields.get("hospitalId") or hospital_fields.get("id") or ""
+    ).strip()
+    if not hospital_id:
+        raise ValueError("hospital_id 不能为空")
+
+    hospital_level, hospital_nature, hospital_type = _parse_hospital_tags(
+        hospital_fields.get("hospitalTagList") or hospital_fields.get("hospital_tags")
+    )
+
+    return {
+        "_id": hospital_id,
+        "item_type": "hospital",
+        "hospital_id": hospital_id,
+        "comm_hospital_id": str(
+            hospital_fields.get("comm_hospital_id") or hospital_fields.get("commHospitalId") or ""
+        ).strip(),
+        "hospital_name": str(
+            hospital_fields.get("hospital_name") or hospital_fields.get("hospitalName") or ""
+        ).strip(),
+        "hospital_logo": str(
+            hospital_fields.get("hospital_logo") or hospital_fields.get("hospitalLogo") or ""
+        ).strip(),
+        "hospital_level": hospital_level,
+        "hospital_nature": hospital_nature,
+        "hospital_type": hospital_type,
+        "hospital_intro": str(
+            hospital_fields.get("hospital_intro")
+            or hospital_fields.get("hospitalIntro")
+            or hospital_fields.get("hospitalIntroduction")
+            or hospital_fields.get("introduction")
+            or hospital_fields.get("summary")
+            or ""
+        ).strip(),
+        "website": "唯医骨科",
         "crawl_time": datetime.now().strftime("%Y-%m-%d"),
     }
 
@@ -580,6 +670,79 @@ def parse_department_records(
             }
         )
     return departments
+
+
+def parse_hospital_page_records(
+    payload: dict[str, object],
+) -> list[dict[str, object]]:
+    hospitals = []
+    for record in _extract_records(payload):
+        hospital_id = str(record.get("hospitalId") or "").strip()
+        hospital_name = str(record.get("hospitalName") or "").strip()
+        if not hospital_id or not hospital_name:
+            continue
+        hospitals.append(
+            {
+                "hospital_id": int(hospital_id) if hospital_id.isdigit() else hospital_id,
+                "hospital_name": hospital_name,
+            }
+        )
+    return hospitals
+
+
+def parse_hospital_detail_records(
+    payload: dict[str, object],
+) -> list[dict[str, object]]:
+    return [record for record in _extract_records(payload) if str(record.get("hospitalId") or "").strip()]
+
+
+def parse_hospital_department_group_records(
+    payload: dict[str, object],
+    *,
+    hospital_id: int | str,
+) -> list[dict[str, str]]:
+    departments = []
+    for record in _extract_records(payload):
+        dept_id = str(record.get("id") or "").strip()
+        dept_name = str(record.get("groupName") or "").strip()
+        if not dept_id or not dept_name or dept_id == "0" or dept_name == "全部":
+            continue
+        departments.append(
+            {
+                "hospital_id": int(hospital_id) if str(hospital_id).isdigit() else str(hospital_id),
+                "dept_id": dept_id,
+                "dept_name": dept_name,
+            }
+        )
+    return departments
+
+
+def parse_hospital_doctor_page_records(
+    payload: dict[str, object],
+    *,
+    hospital_id: int | str,
+    hospital_name: str,
+    dept_id: str,
+    dept_name: str,
+) -> list[dict[str, str]]:
+    doctors = []
+    for record in _extract_records(payload):
+        doctor_id = str(record.get("customerId") or "").strip()
+        if not doctor_id:
+            continue
+        doctors.append(
+            {
+                "hospital_id": int(hospital_id) if str(hospital_id).isdigit() else str(hospital_id),
+                "hospital_name": str(hospital_name).strip(),
+                "dept_id": str(dept_id),
+                "dept_name": str(dept_name).strip(),
+                "doctor_id": doctor_id,
+                "doctor_name": str(record.get("customerName") or "").strip(),
+                "doctor_title": str(record.get("customerTitle") or "").strip(),
+                "doctor_avatar_url": str(record.get("customerLogo") or "").strip(),
+            }
+        )
+    return doctors
 
 
 def parse_doctor_list_records(

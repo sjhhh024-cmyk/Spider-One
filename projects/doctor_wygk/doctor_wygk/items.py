@@ -32,3 +32,20 @@ class DoctorWygkItem(scrapy.Item):
     website = scrapy.Field()
     source_url = scrapy.Field()
     crawl_time = scrapy.Field()
+
+
+class HospitalWygkItem(scrapy.Item):
+    """医院详情 item。"""
+
+    _id = scrapy.Field()
+    item_type = scrapy.Field()
+    hospital_id = scrapy.Field()
+    comm_hospital_id = scrapy.Field()
+    hospital_name = scrapy.Field()
+    hospital_logo = scrapy.Field()
+    hospital_level = scrapy.Field()
+    hospital_nature = scrapy.Field()
+    hospital_type = scrapy.Field()
+    hospital_intro = scrapy.Field()
+    website = scrapy.Field()
+    crawl_time = scrapy.Field()

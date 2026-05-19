@@ -13,14 +13,14 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REDIS_HOST = os.getenv("SPIDER_ONE_REDIS_HOST", "117.50.131.232")
 REDIS_PORT = int(os.getenv("SPIDER_ONE_REDIS_PORT", "6379"))
 SPIDER_NAMES = [
-    "entry_seed_spider",
-    "hospital_department_spider",
-    "department_doctor_list_spider",
-    "live_history_doctor_spider",
-    "course_doctor_spider",
-    "surgery_doctor_spider",
-    "organization_doctor_spider",
-    "doctor_home_fans_spider",
+    # "entry_seed_spider",
+    # "hospital_department_spider",
+    # "department_doctor_list_spider",
+    # "live_history_doctor_spider",
+    # "course_doctor_spider",
+    # "surgery_doctor_spider",
+    # "organization_doctor_spider",
+    # "doctor_home_fans_spider",
     "doctor_detail_spider",
 ]
 DETAIL_ONLY_SPIDER_NAMES = [

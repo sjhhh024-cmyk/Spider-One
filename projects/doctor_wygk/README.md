@@ -26,6 +26,8 @@
 
 - 医院科室链路：
   `getDeptList -> getFrontDoctorList -> personalInfo 多接口合流`
+- 医院详情链路：
+  `getHospitalPage -> hospital_wygk`
 - 直播历史链路：
   `getAllActivityPageInfo -> getActivityDetail -> doctorList[].doctorId`
 - 课程链路：
@@ -64,6 +66,7 @@
 - 所有医生最终统一进入 `doctor_info_url`
 - 医生主页粉丝扩散只负责补入口，不直接入库
 - Mongo 只落最终医生结果，不落中间任务状态
+- 医院详情单独落 `hospital_wygk` 集合，不和医生集合混写
 - 最终入库硬门槛：
   `doctor_name`
   `hospital_name`
@@ -98,6 +101,9 @@
   `doctor_opuses`
   `doctor_patents`
   `doctor_big_events`
+- 上面这些扩展字段最终入 Mongo 时统一存成字符串；多值内容使用英文逗号 `,` 连接，不再用数组格式。
+- 如果要单独刷新医院集合，直接运行：
+  `scrapy crawl hospital_detail_spider`
 - 组织模块当前走“组织资源池 + CAOS 首页专题补口”。
 - 医生主页粉丝模块当前走：
   `getDoctorInfo(customerId) -> getMapList(queryJson)`，

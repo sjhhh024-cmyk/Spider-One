@@ -10,6 +10,7 @@ from scrapy_redis.spiders import RedisSpider
 
 from doctor_wygk.parse_helpers import parse_doctor_home_fans_records, parse_doctor_home_info
 from doctor_wygk.request_builders import build_doctor_home_fans_request, build_doctor_home_info_request
+from doctor_wygk.settings import DOCTOR_HOME_FANS_MIN_COUNT
 from doctor_wygk.tools import (
     REDIS_KEYS,
     build_get_url,
@@ -26,6 +27,7 @@ class Spider(RedisSpider):
     name = "doctor_home_fans_spider"
     redis_key = REDIS_KEYS["doctor_home_task"]
     page_size = 20
+    min_fans_count = DOCTOR_HOME_FANS_MIN_COUNT
 
     def make_request_from_data(self, data):
         task = load_task(data)
@@ -63,10 +65,15 @@ class Spider(RedisSpider):
         home_info = parse_doctor_home_info(payload)
         fans_count = int(home_info.get("fans_count") or 0)
 
-        if fans_count <= 0:
+        if fans_count <= self.min_fans_count:
             redis_client = get_redis_from_settings(self.settings)
             mark_doctor_home_done(redis_client, doctor_id)
-            self.logger.info("主页粉丝为空: doctor_id=%s | fans_count=%s", doctor_id, fans_count)
+            self.logger.info(
+                "主页粉丝跳过: doctor_id=%s | fans_count=%s | threshold=%s",
+                doctor_id,
+                fans_count,
+                self.min_fans_count,
+            )
             return
 
         request_data = build_doctor_home_fans_request(

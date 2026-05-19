@@ -9,6 +9,10 @@ BASE_EDU_WEB_URL = "https://www.allinmd.cn/edu"
 BASE_GATEWAY_URL = "https://api-gateway.allinmd.cn"
 
 API_ENDPOINTS = {
+    "getHospitalPage": f"{BASE_GATEWAY_URL}/landing-resource/appd/dept/hospital/getHospitalPage",
+    "getHospitalDetail": f"{BASE_GATEWAY_URL}/landing-resource/h5d/dept/hospital/getHospitalDetail",
+    "getHospitalDeptGroupList": f"{BASE_GATEWAY_URL}/landing-resource/mpd/dept/hospital/getDeptGroupList",
+    "getHospitalDoctorPage": f"{BASE_GATEWAY_URL}/landing-resource/mpd/dept/hospital/getDeptDoctorPage",
     "getDeptList": f"{BASE_GATEWAY_URL}/tocure-api-platform/services/tocure/dept/getDeptList",
     "getFrontDoctorList": f"{BASE_GATEWAY_URL}/tocure-api-platform/services/tocure/dept/getFrontDoctorList",
     "getCustomerAuth": f"{BASE_GATEWAY_URL}/base-customer-platform/customer/auth/v1/getCustomerAuth",
@@ -46,9 +50,68 @@ DEFAULT_API_PARAMS = {
     "hospitalId": 1,
 }
 
+DEFAULT_APP_API_PARAMS = {
+    "visitSiteId": 5,
+}
+
 DEFAULT_EDU_API_PARAMS = {
     "visitSiteId": 1,
 }
+
+
+def build_hospital_list_request(
+    *,
+    page_num: int = 1,
+    page_size: int = 20,
+    visit_site_id: int | None = None,
+) -> dict[str, object]:
+    return {
+        "url": API_ENDPOINTS["getHospitalPage"],
+        "params": {
+            "visitSiteId": visit_site_id or DEFAULT_APP_API_PARAMS["visitSiteId"],
+            "pageNum": page_num,
+            "pageSize": page_size,
+        },
+    }
+
+
+def build_hospital_department_groups_request(*, hospital_id: int | str) -> dict[str, object]:
+    return {
+        "url": API_ENDPOINTS["getHospitalDeptGroupList"],
+        "params": {
+            "hospitalId": int(hospital_id) if str(hospital_id).isdigit() else str(hospital_id),
+        },
+    }
+
+
+def build_hospital_detail_request(*, hospital_id: int | str) -> dict[str, object]:
+    return {
+        "url": API_ENDPOINTS["getHospitalDetail"],
+        "params": {
+            "hospitalId": int(hospital_id) if str(hospital_id).isdigit() else str(hospital_id),
+        },
+    }
+
+
+def build_hospital_doctor_page_request(
+    *,
+    hospital_id: int | str,
+    group_id: int | str,
+    page_num: int = 1,
+    page_size: int = 20,
+) -> dict[str, object]:
+    params: dict[str, object] = {
+        "hospitalId": int(hospital_id) if str(hospital_id).isdigit() else str(hospital_id),
+        "pageNum": page_num,
+        "pageSize": page_size,
+    }
+    normalized_group_id = str(group_id).strip()
+    if normalized_group_id:
+        params["groupId"] = int(normalized_group_id) if normalized_group_id.isdigit() else normalized_group_id
+    return {
+        "url": API_ENDPOINTS["getHospitalDoctorPage"],
+        "params": params,
+    }
 
 
 def build_department_request(
