@@ -1,0 +1,82 @@
+"""doctor_hnyygh 项目配置。"""
+
+from __future__ import annotations
+
+import os
+from urllib.parse import quote_plus
+
+from doctor_hnyygh.route_hypotheses import (
+    DOCTOR_COLLECTION_NAME,
+    HOSPITAL_COLLECTION_NAME,
+    build_redis_keys,
+)
+
+
+BOT_NAME = "doctor_hnyygh"
+
+SPIDER_MODULES = ["doctor_hnyygh.spiders"]
+NEWSPIDER_MODULE = "doctor_hnyygh.spiders"
+COMMANDS_MODULE = "doctor_hnyygh.commands"
+
+ROBOTSTXT_OBEY = False
+
+MONGO_HOST = "101.200.125.240"
+MONGO_PORT = 27017
+MONGO_USERNAME = "admin"
+MONGO_PASSWORD = "a@Mfv8k!r@8r@8&R"
+MONGO_AUTH_SOURCE = "admin"
+MONGO_DATABASE = "Doctor_Database"
+
+mongo_username = quote_plus(MONGO_USERNAME)
+mongo_password = quote_plus(MONGO_PASSWORD)
+MONGO_URI = (
+    f"mongodb://{mongo_username}:{mongo_password}@{MONGO_HOST}:{MONGO_PORT}/"
+    f"?authSource={MONGO_AUTH_SOURCE}"
+)
+MONGO_DOCTOR_COLLECTION = DOCTOR_COLLECTION_NAME
+MONGO_HOSPITAL_COLLECTION = HOSPITAL_COLLECTION_NAME
+
+REDIS_HOST = os.getenv("SPIDER_ONE_REDIS_HOST", "117.50.131.232")
+REDIS_PORT = int(os.getenv("SPIDER_ONE_REDIS_PORT", "6379"))
+REDIS_DB = int(os.getenv("SPIDER_ONE_REDIS_DB", "1"))
+REDIS_PASSWORD = os.getenv("SPIDER_ONE_REDIS_PASSWORD", "Yb$]Mdh3YU2k}hw")
+REDIS_START_URLS_AS_SET = True
+REDIS_PARAMS = {
+    "socket_connect_timeout": 5,
+    "socket_timeout": 5,
+    "decode_responses": False,
+}
+
+if REDIS_PASSWORD:
+    password = quote_plus(REDIS_PASSWORD)
+    REDIS_URL = f"redis://:{password}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+else:
+    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+
+REDIS_KEYS = build_redis_keys()
+REDIS_KEY_AREA_INDEX_URL = REDIS_KEYS["area_index_url"]
+REDIS_KEY_HOSPITAL_LIST_URL = REDIS_KEYS["hospital_list_url"]
+REDIS_KEY_DEPARTMENT_LIST_URL = REDIS_KEYS["department_list_url"]
+REDIS_KEY_DOCTOR_LIST_URL = REDIS_KEYS["doctor_list_url"]
+REDIS_KEY_DOCTOR_INFO_URL = REDIS_KEYS["doctor_info_url"]
+
+RETRY_TIMES = 3
+DOWNLOAD_DELAY = 0.1
+CONCURRENT_REQUESTS = 16
+COOKIES_ENABLED = True
+REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
+
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+SCHEDULER_PERSIST = True
+SCHEDULER_QUEUE_CLASS = "scrapy_redis.queue.SpiderPriorityQueue"
+SCHEDULER_IDLE_BEFORE_CLOSE = 5
+MAX_IDLE_TIME_BEFORE_CLOSE = 10
+
+ITEM_PIPELINES = {
+    "doctor_hnyygh.pipelines.MongoPipeline": 300,
+}
+
+DOWNLOADER_MIDDLEWARES = {}
+
+LOG_LEVEL = "INFO"
