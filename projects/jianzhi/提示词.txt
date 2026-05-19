@@ -1,0 +1,5 @@
+1.阅读"C:\Users\lenovo\Desktop\Spider One\projects\jianzhi\file"内的公共需求、总结文件；
+2.参考"C:\Users\lenovo\Desktop\Spider One\projects\jianzhi\jnggzy"   项目地址；
+           "C:\Users\lenovo\Desktop\Spider One\projects\jianzhi\zbggzy" 项目地址；
+3.通用模型"C:\Users\lenovo\Desktop\Spider One\projects\jianzhi\general_model"
+4.新开项目网站：http://ggzyjy.zibo.gov.cn:8082/
