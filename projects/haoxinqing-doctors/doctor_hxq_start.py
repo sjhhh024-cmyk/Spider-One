@@ -84,6 +84,15 @@ def build_mongo_client(mongodb_config: dict[str, Any]) -> pymongo.MongoClient:
     return pymongo.MongoClient(**client_kwargs)
 
 
+def get_doctor_collection_name(mongodb_config: dict[str, Any]) -> str:
+    """优先读取 doctor_collection，兼容旧版 collection 字段。"""
+    return str(
+        mongodb_config.get("doctor_collection")
+        or mongodb_config.get("collection")
+        or "doctor_hxq"
+    )
+
+
 class HaoxinqingDoctorSpider:
     """好心情医生采集脚本，负责请求接口、整理字段并写入 MongoDB。"""
 
@@ -115,7 +124,9 @@ class HaoxinqingDoctorSpider:
         }
 
         self.mongo_client = build_mongo_client(self.mongodb)
-        self.collection = self.mongo_client[self.mongodb["database"]][self.mongodb["collection"]]
+        self.collection = self.mongo_client[self.mongodb["database"]][
+            get_doctor_collection_name(self.mongodb)
+        ]
         self.seen_doctor_ids: set[str] = set()
 
     def build_page_url(self, page_number: int) -> str:
@@ -259,7 +270,7 @@ class HaoxinqingDoctorSpider:
         logger.info("起始页: %s", self.start_page)
         logger.info("最大页数: %s", self.max_pages)
         logger.info("MongoDB 库: %s", self.mongodb["database"])
-        logger.info("MongoDB 集合: %s", self.mongodb["collection"])
+        logger.info("MongoDB 集合: %s", get_doctor_collection_name(self.mongodb))
         logger.info("-" * 60)
 
         for page_number in range(self.start_page, self.max_pages + 1):

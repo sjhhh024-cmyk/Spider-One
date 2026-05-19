@@ -5,16 +5,48 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57441707-09d4-457a-b45e-6476e2f01f58" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docs/crawler-platform-vision-zh.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/crawler-platform-vision-zh.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docs/plans/2026-04-02-crawler-platform-architecture-design.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/plans/2026-04-02-crawler-platform-architecture-design.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docs/plans/2026-04-02-crawler-platform-implementation-plan.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/plans/2026-04-02-crawler-platform-implementation-plan.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docs/plans/2026-04-02-web-crawling-employee-design.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../docs/plans/2026-04-02-web-crawling-employee-design.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../runtime/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../../runtime/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../web-crawling-employee/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../web-crawling-employee/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../web-crawling-employee/agents/openai.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../web-crawling-employee/agents/openai.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../web-crawling-employee/references/runtime-architecture.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../web-crawling-employee/references/runtime-architecture.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../web-crawling-employee/references/test-checklist.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../web-crawling-employee/references/test-checklist.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-circle/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-circle/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-circle/doctor_circle/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-circle/doctor_circle/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/debug_ywbd_second_layer.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/items.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/items.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/middlewares.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/pipelines.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/pipelines.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/probe_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/probe_helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/route_hypotheses.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/route_hypotheses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/spiders/doctor/10_hospital_detail_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/spiders/doctor/10_hospital_detail_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/spiders/doctor/12_doctor_detail_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/spiders/doctor/12_doctor_detail_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/start.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/doctor_ywbd/start.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tests/test_doctor_detail_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/tests/test_doctor_detail_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tests/test_middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/tests/test_middlewares.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tests/test_probe_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/tests/test_probe_helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tests/test_route_hypotheses.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/tests/test_route_hypotheses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tests/test_start_modes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor-ywbd/tests/test_start_modes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tmp_521.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tmp_521_stage2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor-ywbd/tmp_probe_j29793p107.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/items.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/items.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/parse_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/parse_helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/pipelines.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/pipelines.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/request_builders.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/request_builders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/01_entry_seed_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/01_entry_seed_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/02_hospital_department_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/02_hospital_department_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/03_department_doctor_list_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/03_department_doctor_list_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/09_doctor_home_fans_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/spiders/doctor/09_doctor_home_fans_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/start.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/start.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/doctor_wygk/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/tests/test_parse_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/tests/test_parse_helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/tests/test_pipelines.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/tests/test_pipelines.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/tests/test_redis_keys.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/tests/test_redis_keys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/tests/test_request_builders.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/tests/test_request_builders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/tests/test_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/tests/test_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../doctor_wygk/tests/test_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../doctor_wygk/tests/test_settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doctor_hxq_start.py" beforeDir="false" afterPath="$PROJECT_DIR$/doctor_hxq_start.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_all_search_p1_ps3.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,24 +64,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.doctor_hxq_start.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/lenovo/Desktop/Spider One/projects/haoxinqing-doctors&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.doctor_hxq_start.executor": "Run",
+    "Python.hospital_hxq_start.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/lenovo/Desktop/Spider One/projects/haoxinqing-doctors",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager">
+}]]></component>
+  <component name="RunManager" selected="Python.hospital_hxq_start">
     <configuration name="doctor_hxq_start" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="haoxinqing-doctors" />
       <option name="ENV_FILES" value="" />
@@ -73,8 +107,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="hospital_hxq_start" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="haoxinqing-doctors" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/hospital_hxq_start.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.hospital_hxq_start" />
         <item itemvalue="Python.doctor_hxq_start" />
       </list>
     </recent_temporary>
@@ -96,6 +154,7 @@
       <updated>1775532785431</updated>
       <workItem from="1775532787215" duration="12489000" />
       <workItem from="1775614123102" duration="3079000" />
+      <workItem from="1776656441920" duration="3859000" />
     </task>
     <servers />
   </component>
@@ -103,6 +162,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/haoxinqing_doctors$hospital_hxq_start.coverage" NAME="hospital_hxq_start 覆盖结果" MODIFIED="1776657369106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/haoxinqing_doctors$doctor_hxq_start.coverage" NAME="doctor_hxq_start 覆盖结果" MODIFIED="1775545185661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

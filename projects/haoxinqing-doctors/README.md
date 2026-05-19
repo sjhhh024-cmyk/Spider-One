@@ -2,25 +2,28 @@
 
 ## 项目定位
 
-这是一个单机脚本项目，专门针对好心情 `allSearch` 接口做医生数据采集，并直接写入 MongoDB。
+这是一个单机脚本项目，专门针对好心情做医生列表采集和医院详情采集，并直接写入 MongoDB。
 
 当前实现特点：
 
 - 直接请求接口，不依赖浏览器
-- 自动按页推进
+- 医生列表自动按页推进
+- 医院详情从医生集合里提取 `hospital_id_hxq` 去重后抓取
 - 遇到 `code=4998` / `系统错误` 自动重试
 - 遇到“请求第 N 页但响应回了别的页”自动重试
 - 按 `doctor.id` 去重
-- 每页数据按顺序直接写入 MongoDB
+- 医生和医院数据都按 `_id` 覆盖写入 MongoDB
 - 头像地址自动拼成完整 URL
 - 控制台直接打印页码、请求地址、条数、字段名、样本记录和入库结果
-- 入口只有一个主脚本，读下来就是直线流程
+- 入口脚本都比较薄，主逻辑保持直线流程
 
 ## 目录说明
 
 - `profile.yml`：你要改的配置文件
-- `doctor_hxq_start.py`：主脚本，读配置、请求、解析、去重、入库都在这里
-- `start.ps1`：最薄启动入口，等价于执行一次 Python 主脚本
+- `doctor_hxq_start.py`：医生列表主脚本，读配置、请求、解析、去重、入库都在这里
+- `hospital_hxq_start.py`：医院详情主脚本，从医生集合抽医院 ID，再抓医院详情并入库
+- `start.ps1`：医生列表启动入口
+- `start_hospital.ps1`：医院详情启动入口
 - `profile.example.yml`：参考配置
 - `sample_all_search_p1_ps3.json`：接口样本，方便你看字段
 
@@ -28,7 +31,8 @@
 
 - 改配置：`profile.yml`
 - 看逻辑：`doctor_hxq_start.py`
-- 真正启动：`start.ps1`
+- 抓医生：`start.ps1`
+- 抓医院：`start_hospital.ps1`
 
 ## 配置
 
@@ -48,6 +52,9 @@ Copy-Item profile.example.yml profile.yml
 - `source.max_pages`：最大探测页数
 - `source.timeout_seconds`：单次请求超时
 - `source.max_retries`：单页失败最大重试次数
+- `hospital_source.base_url`：医院详情接口地址
+- `hospital_source.timeout_seconds`：医院详情单次请求超时
+- `hospital_source.max_retries`：医院详情单条失败最大重试次数
 - `mongodb.uri`：如果你已经有完整连接串，就填这里；留空则走下面的账号密码字段
 - `mongodb.host`：MongoDB 主机
 - `mongodb.port`：MongoDB 端口
@@ -55,7 +62,8 @@ Copy-Item profile.example.yml profile.yml
 - `mongodb.password`：MongoDB 密码
 - `mongodb.auth_source`：MongoDB 认证库，常见是 `admin`
 - `mongodb.database`：数据库名
-- `mongodb.collection`：集合名
+- `mongodb.doctor_collection`：医生集合名，当前默认 `doctor_hxq`
+- `mongodb.hospital_collection`：医院集合名，当前默认 `hospital_hxq`
 - `mongodb.upsert_key`：upsert 键，当前默认 `doctor_id`
 
 ## 运行方式
@@ -64,6 +72,12 @@ Copy-Item profile.example.yml profile.yml
 
 ```powershell
 pwsh -File .\start.ps1 -ProfilePath profile.yml
+```
+
+抓医院详情：
+
+```powershell
+pwsh -File .\start_hospital.ps1 -ProfilePath profile.yml
 ```
 
 也可以直接运行：
@@ -95,6 +109,22 @@ py doctor_hxq_start.py --profile profile.yml
 - `source_site`
 - `source_url`
 - `grab_data`
+
+## 当前医院落库字段
+
+当前医院详情脚本直接按单层结构入库，字段包括：
+
+- `_id`
+- `hospital_id`
+- `name`
+- `alias`
+- `address`
+- `hospital_level_text`
+- `hospital_avatar_url`
+- `intro`
+- `website`
+- `hospital_url`
+- `crawl_time`
 
 ## 当前已知接口规律
 
