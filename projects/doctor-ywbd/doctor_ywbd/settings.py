@@ -5,12 +5,8 @@ from __future__ import annotations
 import os
 from urllib.parse import quote_plus
 
-from doctor_ywbd.route_hypotheses import DOCTOR_COLLECTION_NAME, build_redis_keys
-from doctor_ywbd.tools import (
-    BROWSER_REQUEST_HEADERS,
-    build_cookie_cache_path,
-    build_cookie_header_from_mapping,
-)
+from doctor_ywbd.route_hypotheses import DOCTOR_COLLECTION_NAME, HOSPITAL_COLLECTION_NAME, build_redis_keys
+from doctor_ywbd.tools import build_cookie_cache_path, build_cookie_header_from_mapping
 
 
 BOT_NAME = "doctor_ywbd"
@@ -36,6 +32,7 @@ MONGO_URI = (
     f"?authSource={MONGO_AUTH_SOURCE}"
 )
 MONGO_DOCTOR_COLLECTION = DOCTOR_COLLECTION_NAME
+MONGO_HOSPITAL_COLLECTION = HOSPITAL_COLLECTION_NAME
 
 # Redis 配置：复用 doctor-circle 的现有连接。
 REDIS_HOST = os.getenv("SPIDER_ONE_REDIS_HOST", "127.0.0.1")
@@ -63,18 +60,17 @@ REDIS_KEY_HOSPITAL_DETAIL_URL = REDIS_KEYS["hospital_detail_url"]
 REDIS_KEY_HOSPITAL_EXPERT_URL = REDIS_KEYS["hospital_expert_url"]
 REDIS_KEY_DOCTOR_INFO_URL = REDIS_KEYS["doctor_info_url"]
 
-DEFAULT_REQUEST_HEADERS = BROWSER_REQUEST_HEADERS
 YWBD_INITIAL_COOKIE = {
-  "isYY": "yisheng",
-  "isAK": "area",
+  "isYY": "yiyuan",
   "__jsluid_s": "c057e52512c25f82cdc56c0ec47c5bfd",
   "ASKBAIDUUID": "ask%3A1775803406573247",
-  "Hm_lvt_d7682ab43891c68a00de46e9ce5b76aa": "1776144331",
-  "Hm_lvt_7c2c4ab8a1436c0f67383fe9417819b7": "1775963675,1775969081,1776051745,1776214795",
+  "Hm_lvt_d7682ab43891c68a00de46e9ce5b76aa": "1776144331,1776215054",
+  "Hm_lvt_7c2c4ab8a1436c0f67383fe9417819b7": "1775969081,1776051745,1776214795,1776654523",
   "HMACCOUNT": "BF60C57DDB4B8BA6",
-  "__jsl_clearance_s": "1776214803.512|1|WINlkZKEQo1RVQwkFekWryt2cmA%3D",
-  "_csrf": "94a3b52d5319b26d132e9f0619f57b83ab2a1267ba422917e7f0e8f898af188fa%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%224NlV3piaxBQYWU76X3hRNvk24jTu-Aar%22%3B%7D",
-  "Hm_lpvt_7c2c4ab8a1436c0f67383fe9417819b7": "1776214816"
+  "comHealthCloudUserProfileUseTag": "d3d841ec20d22dcd32cb9f8b2a88e202",
+  "__jsl_clearance_s": "1776654540.731|0|Wr0gDIEupl437VofDqwsAZdm2JQ%3D",
+  "_csrf": "d17a3840ec791a9eea87efdf8f81cbfd995a6a4bd9c7c7f460db7cd3c35c8ca7a%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%22E58HuLi-23LLfBuCeRCk3Urvjt_klkyh%22%3B%7D",
+  "Hm_lpvt_7c2c4ab8a1436c0f67383fe9417819b7": "1776655385"
 }
 YWBD_INITIAL_COOKIE_HEADER = build_cookie_header_from_mapping(YWBD_INITIAL_COOKIE)
 YWBD_COOKIE_PROBE_URL = os.getenv("YWBD_COOKIE_PROBE_URL", "https://data.120ask.com/yisheng/jibing.html")
@@ -88,6 +84,19 @@ DOWNLOAD_DELAY = 0.3
 CONCURRENT_REQUESTS = 30
 COOKIES_ENABLED = False
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
+YWBD_CURL_CFFI_ENABLED = True
+YWBD_CURL_CFFI_ENABLED_SPIDERS = [
+    "area_list_spider",
+    "hospital_area_index_spider",
+    "hospital_list_spider",
+    "hospital_detail_spider",
+    "hospital_expert_spider",
+]
+YWBD_CURL_CFFI_IMPERSONATE = "chrome"
+YWBD_CURL_CFFI_TIMEOUT = 40
+YWBD_PROXY_ENABLED = False
+YWBD_DOCTOR_DETAIL_REQUEUE_MAX_ATTEMPTS = 3
+YWBD_DOCTOR_DETAIL_ALWAYS_REQUEUE_STATUSES = [403, 521]
 
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
@@ -101,9 +110,13 @@ ITEM_PIPELINES = {
 }
 
 DOWNLOADER_MIDDLEWARES = {
-    "doctor_ywbd.middlewares.RetryMiddleware": 502,
-    "doctor_ywbd.middlewares.UserAgentMiddleware": 503,
-    "doctor_ywbd.middlewares.ProxyMiddleware": 504,
+    # 这些默认中间件的职责由项目自定义实现接管，显式关闭以减少日志噪音。
+    "scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware": None,
+    "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
+    "doctor_ywbd.middlewares.ClearanceRetryMiddleware": 502,
+    "doctor_ywbd.middlewares.BrowserHeadersMiddleware": 503,
+    "doctor_ywbd.middlewares.AbuyunProxyMiddleware": 504,
+    "doctor_ywbd.curl_cffi_downloader.CurlCffiMiddleware": 505,
     "scrapy.downloadermiddlewares.retry.RetryMiddleware": 550,
 }
 

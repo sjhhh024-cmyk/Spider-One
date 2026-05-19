@@ -11,7 +11,7 @@ from doctor_ywbd.tools import (
 )
 
 
-class UserAgentMiddleware:
+class BrowserHeadersMiddleware:
     """给请求补齐浏览器请求头，并可注入过盾 cookie。"""
 
     DEFAULT_USER_AGENT = DEFAULT_BROWSER_USER_AGENT
@@ -39,7 +39,7 @@ class UserAgentMiddleware:
         return None
 
 
-class RetryMiddleware:
+class ClearanceRetryMiddleware:
     """手工 cookie 模式下，521 时刷新动态 cookie 字段并重试。"""
 
     def __init__(self, cookie_manager=None) -> None:
@@ -69,11 +69,26 @@ class RetryMiddleware:
         return response
 
 
-class ProxyMiddleware:
+class AbuyunProxyMiddleware:
     """给请求挂 Abuyun 代理。"""
 
+    def __init__(self, enabled: bool = True) -> None:
+        self.enabled = bool(enabled)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(enabled=crawler.settings.getbool("YWBD_PROXY_ENABLED", False))
+
     def process_request(self, request, spider):
+        if not self.enabled:
+            return None
         request.meta["proxy"] = get_proxy()
         request.headers["Proxy-Authorization"] = get_proxy_auth_header()
         request.meta["_auth_proxy"] = get_proxy()
         return None
+
+
+# 兼容旧导入路径，避免影响现有调用方和测试之外的脚本。
+UserAgentMiddleware = BrowserHeadersMiddleware
+RetryMiddleware = ClearanceRetryMiddleware
+ProxyMiddleware = AbuyunProxyMiddleware

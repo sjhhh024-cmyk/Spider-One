@@ -11,6 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from doctor_ywbd.route_hypotheses import (  # noqa: E402
     DOCTOR_COLLECTION_NAME,
+    HOSPITAL_COLLECTION_NAME,
     ENTRY_POINTS,
     REDIS_KEY_BY_CATEGORY,
     build_redis_keys,
@@ -53,3 +54,4 @@ def test_entry_categories_write_into_stage_one_index_keys() -> None:
 
 def test_mongo_collection_name_uses_ywbd_namespace() -> None:
     assert DOCTOR_COLLECTION_NAME == "doctor_ywbd"
+    assert HOSPITAL_COLLECTION_NAME == "hospital_ywbd"

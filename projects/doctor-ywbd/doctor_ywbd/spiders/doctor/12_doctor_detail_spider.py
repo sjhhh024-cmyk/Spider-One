@@ -6,9 +6,11 @@ import re
 from html import unescape
 from urllib.parse import urljoin, urlparse
 
+from scrapy import Request, signals
 from scrapy_redis.spiders import RedisSpider
 
 from doctor_ywbd.items import YwbdItem
+from doctor_ywbd.redis_requests import push_redis_request
 from doctor_ywbd.route_hypotheses import build_redis_keys
 
 
@@ -128,6 +130,102 @@ class Spider(RedisSpider):
 
     name = "doctor_detail_spider"
     redis_key = build_redis_keys()["doctor_info_url"]
+    retry_count_key = f"{redis_key}:failures"
+    always_requeue_statuses = {403, 521}
+    max_requeue_attempts = 3
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super().from_crawler(crawler, *args, **kwargs)
+        spider.max_requeue_attempts = crawler.settings.getint("YWBD_DOCTOR_DETAIL_REQUEUE_MAX_ATTEMPTS", 3)
+        configured_statuses = crawler.settings.getlist("YWBD_DOCTOR_DETAIL_ALWAYS_REQUEUE_STATUSES") or [403, 521]
+        spider.always_requeue_statuses = {int(status) for status in configured_statuses}
+        crawler.signals.connect(spider.handle_spider_error, signal=signals.spider_error)
+        crawler.signals.connect(spider.handle_item_error, signal=signals.item_error)
+        crawler.signals.connect(spider.handle_item_scraped, signal=signals.item_scraped)
+        return spider
+
+    def make_request_from_data(self, data):
+        request = super().make_request_from_data(data)
+        if isinstance(request, Request):
+            request.errback = self.handle_request_error
+        return request
+
+    def _requeue_url(self, url: str, *, reason: str) -> None:
+        normalized_url = str(url or "").strip()
+        if not normalized_url:
+            return
+
+        current_attempts = int(self.server.hincrby(self.retry_count_key, normalized_url, 1))
+        if current_attempts > self.max_requeue_attempts:
+            self.logger.error(
+                "医生详情失败次数超过上限，不再回灌: %s | 原因: %s | 次数: %s/%s",
+                normalized_url,
+                reason,
+                current_attempts,
+                self.max_requeue_attempts,
+            )
+            return
+
+        push_redis_request(self.server, self.redis_key, normalized_url)
+        self.logger.warning(
+            "医生详情失败后已回灌: %s | 原因: %s | 次数: %s/%s",
+            normalized_url,
+            reason,
+            current_attempts,
+            self.max_requeue_attempts,
+        )
+
+    def _requeue_url_without_limit(self, url: str, *, reason: str) -> None:
+        normalized_url = str(url or "").strip()
+        if not normalized_url:
+            return
+
+        push_redis_request(self.server, self.redis_key, normalized_url)
+        self.logger.warning(
+            "医生详情命中拦截状态后已回灌: %s | 原因: %s",
+            normalized_url,
+            reason,
+        )
+
+    def handle_request_error(self, failure):
+        request = getattr(failure, "request", None)
+        url = getattr(request, "url", "")
+        reason = failure.value.__class__.__name__ if getattr(failure, "value", None) else "download_error"
+        self._requeue_url(url, reason=reason)
+        return []
+
+    def handle_spider_error(self, failure, response, spider):
+        if spider is not self:
+            return
+        request = getattr(response, "request", None)
+        url = getattr(request, "url", "") or getattr(response, "url", "")
+        status = int(getattr(response, "status", 0) or 0)
+        if status in self.always_requeue_statuses:
+            self._requeue_url_without_limit(url, reason=f"HTTP_{status or 'unknown'}")
+            return
+
+        reason = failure.value.__class__.__name__ if getattr(failure, "value", None) else "parse_error"
+        self._requeue_url(url, reason=reason)
+
+    def handle_item_error(self, item, response, spider, failure):
+        if spider is not self:
+            return
+        url = ""
+        if isinstance(item, dict):
+            url = str(item.get("url", "")).strip()
+        url = url or getattr(response, "url", "")
+        reason = failure.value.__class__.__name__ if getattr(failure, "value", None) else "item_error"
+        self._requeue_url(url, reason=reason)
+
+    def handle_item_scraped(self, item, response, spider):
+        if spider is not self:
+            return
+        url = ""
+        if isinstance(item, dict):
+            url = str(item.get("url", "")).strip()
+        if url:
+            self.server.hdel(self.retry_count_key, url)
 
     def parse(self, response):
         detail_fields = extract_doctor_detail_fields(response.url, response.text)

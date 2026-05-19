@@ -20,6 +20,7 @@ REDIS_KEY_BY_CATEGORY = {
 }
 
 DOCTOR_COLLECTION_NAME = "doctor_ywbd"
+HOSPITAL_COLLECTION_NAME = "hospital_ywbd"
 
 
 def build_redis_keys(prefix: str = "doctor_ywbd") -> dict[str, str]:

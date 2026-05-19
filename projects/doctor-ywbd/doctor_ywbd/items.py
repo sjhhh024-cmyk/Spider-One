@@ -17,3 +17,15 @@ class YwbdItem(Item):
     good_at = Field()
     intro = Field()
     avatar_url = Field()
+
+
+class HospitalYlysItem(Item):
+    """医院基础信息结构。"""
+
+    _id = Field()
+    hospital_name = Field()
+    hospital_url = Field()
+    hospital_address = Field()
+    hospital_phone = Field()
+    hospital_intro = Field()
+    website = Field()

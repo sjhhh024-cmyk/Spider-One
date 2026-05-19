@@ -4,13 +4,23 @@ import json
 import sys
 from pathlib import Path
 
+from doctor_ywbd import settings as project_settings
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 
-from doctor_ywbd.middlewares import ProxyMiddleware, RetryMiddleware, get_proxy  # noqa: E402
+from doctor_ywbd.middlewares import (  # noqa: E402
+    AbuyunProxyMiddleware,
+    BrowserHeadersMiddleware,
+    ClearanceRetryMiddleware,
+    ProxyMiddleware,
+    RetryMiddleware,
+    UserAgentMiddleware,
+    get_proxy,
+)
 from doctor_ywbd.tools import get_proxy_auth_header  # noqa: E402
 
 
@@ -63,9 +73,40 @@ def test_get_proxy_auth_header_returns_basic_auth() -> None:
     assert proxy_auth.startswith("Basic ")
 
 
+def test_downloader_middleware_settings_disable_redundant_scrapy_defaults() -> None:
+    assert (
+        project_settings.DOWNLOADER_MIDDLEWARES["scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware"]
+        is None
+    )
+    assert (
+        project_settings.DOWNLOADER_MIDDLEWARES["scrapy.downloadermiddlewares.useragent.UserAgentMiddleware"]
+        is None
+    )
+    assert project_settings.DOWNLOADER_MIDDLEWARES["doctor_ywbd.middlewares.BrowserHeadersMiddleware"] == 503
+    assert project_settings.DOWNLOADER_MIDDLEWARES["doctor_ywbd.middlewares.AbuyunProxyMiddleware"] == 504
+    assert project_settings.DOWNLOADER_MIDDLEWARES["doctor_ywbd.middlewares.ClearanceRetryMiddleware"] == 502
+
+
+def test_curl_cffi_settings_cover_area_and_hospital_chain_spiders() -> None:
+    assert project_settings.YWBD_CURL_CFFI_ENABLED is True
+    assert project_settings.YWBD_CURL_CFFI_ENABLED_SPIDERS == [
+        "area_list_spider",
+        "hospital_area_index_spider",
+        "hospital_list_spider",
+        "hospital_detail_spider",
+        "hospital_expert_spider",
+    ]
+
+
+def test_legacy_middleware_aliases_still_point_to_new_named_classes() -> None:
+    assert UserAgentMiddleware is BrowserHeadersMiddleware
+    assert ProxyMiddleware is AbuyunProxyMiddleware
+    assert RetryMiddleware is ClearanceRetryMiddleware
+
+
 def test_proxy_middleware_sets_proxy_on_request() -> None:
     request = DummyRequest()
-    middleware = ProxyMiddleware()
+    middleware = AbuyunProxyMiddleware(enabled=True)
 
     middleware.process_request(request, spider=None)
 
@@ -74,11 +115,20 @@ def test_proxy_middleware_sets_proxy_on_request() -> None:
     assert request.headers["Proxy-Authorization"].startswith("Basic ")
 
 
+def test_proxy_middleware_skips_request_when_disabled() -> None:
+    request = DummyRequest()
+    middleware = AbuyunProxyMiddleware(enabled=False)
+
+    middleware.process_request(request, spider=None)
+
+    assert "proxy" not in request.meta
+    assert "_auth_proxy" not in request.meta
+    assert "Proxy-Authorization" not in request.headers
+
+
 def test_user_agent_middleware_sets_browser_like_headers() -> None:
     request = DummyRequest()
-    from doctor_ywbd.middlewares import UserAgentMiddleware
-
-    middleware = UserAgentMiddleware()
+    middleware = BrowserHeadersMiddleware()
     middleware.process_request(request, spider=None)
 
     assert request.headers["Accept"].startswith("text/html,application/xhtml+xml")
@@ -93,9 +143,7 @@ def test_user_agent_middleware_sets_browser_like_headers() -> None:
 
 def test_user_agent_middleware_sets_cookie_when_configured() -> None:
     request = DummyRequest()
-    from doctor_ywbd.middlewares import UserAgentMiddleware
-
-    middleware = UserAgentMiddleware(cookie_header="isYY=yisheng; __jsl_clearance_s=test")
+    middleware = BrowserHeadersMiddleware(cookie_header="isYY=yisheng; __jsl_clearance_s=test")
     middleware.process_request(request, spider=None)
 
     assert request.headers["Cookie"] == "isYY=yisheng; __jsl_clearance_s=test"
@@ -115,7 +163,7 @@ def test_retry_middleware_returns_response_on_521_for_manual_cookie_mode() -> No
         def get_cookie_header(self) -> str:
             return self.current_cookie
 
-    middleware = RetryMiddleware(cookie_manager=DummyCookieManager())
+    middleware = ClearanceRetryMiddleware(cookie_manager=DummyCookieManager())
     spider = DummySpider()
     request = DummyRequest(url="https://data.120ask.com/yisheng/list_j4928p106.html")
     response = DummyResponse(request.url, 521)
@@ -131,7 +179,7 @@ def test_retry_middleware_returns_response_on_521_for_manual_cookie_mode() -> No
 
 
 def test_retry_middleware_leaves_non_521_status_to_default_retry_chain() -> None:
-    middleware = RetryMiddleware()
+    middleware = ClearanceRetryMiddleware()
     spider = DummySpider()
     request = DummyRequest(url="https://data.120ask.com/yisheng/jibing.html")
     response = DummyResponse("https://data.120ask.com/yisheng/jibing.html", 500)

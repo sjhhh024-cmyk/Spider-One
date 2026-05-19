@@ -438,7 +438,7 @@ def build_hospital_expert_ajax_request_specs(
     results: list[dict[str, object]] = []
     page_count = int(ajax_context["page_count"])
 
-    for page_number in range(2, page_count + 1):
+    for page_number in range(1, page_count + 1):
         params = {
             "hid": str(ajax_context["hid"]),
             "pid": str(page_number),

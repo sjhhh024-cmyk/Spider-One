@@ -414,6 +414,17 @@ def test_build_hospital_expert_ajax_request_specs_fix_cookiejar_and_headers() ->
         cookiejar_id="hospital-expert-1",
     ) == [
         {
+            "url": "https://data.120ask.com/public/ajaxyisheng?hid=125&pid=1&did=0&zid=0&sid=0&wid=0&tid=0&kid=0&limit=8",
+            "page_number": 1,
+            "headers": {
+                "Referer": "https://data.120ask.com/yiyuan/yisheng/0387pltyawkim7pa.html",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            "meta": {
+                "cookiejar": "hospital-expert-1",
+            },
+        },
+        {
             "url": "https://data.120ask.com/public/ajaxyisheng?hid=125&pid=2&did=0&zid=0&sid=0&wid=0&tid=0&kid=0&limit=8",
             "page_number": 2,
             "headers": {

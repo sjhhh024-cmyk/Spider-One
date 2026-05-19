@@ -11,6 +11,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from doctor_ywbd import settings as project_settings  # noqa: E402
 from doctor_ywbd.start import DEFAULT_SPIDER_NAMES, DETAIL_ONLY_SPIDER_NAMES  # noqa: E402
+from doctor_ywbd.start_hospital import HOSPITAL_ONLY_SPIDER_NAMES  # noqa: E402
 
 
 def test_full_start_pipeline_runs_split_stage_spiders_in_order() -> None:
@@ -33,6 +34,15 @@ def test_full_start_pipeline_runs_split_stage_spiders_in_order() -> None:
 def test_detail_only_start_mode_runs_only_final_consumer() -> None:
     assert DETAIL_ONLY_SPIDER_NAMES == [
         "doctor_detail_spider",
+    ]
+
+
+def test_hospital_only_start_mode_runs_hospital_chain() -> None:
+    assert HOSPITAL_ONLY_SPIDER_NAMES == [
+        "entry_seed_spider",
+        "hospital_area_index_spider",
+        "hospital_list_spider",
+        "hospital_detail_spider",
     ]
 
 
