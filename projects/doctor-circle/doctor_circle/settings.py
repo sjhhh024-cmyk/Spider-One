@@ -36,6 +36,7 @@ MONGO_URI = (
 )
 MONGO_CIRCLE_COLLECTION = "doctor_circle_list"
 MONGO_DOCTOR_COLLECTION = "doctor_circle"
+MONGO_HOSPITAL_COLLECTION = "hospital_circle"
 
 # Redis 配置
 # 这里默认连本地 127.0.0.1:6379，适合先打 SSH 隧道再运行 Scrapy。
@@ -61,6 +62,38 @@ CIRCLE_LIST_TOKEN = os.getenv(
     "DOCTOR_CIRCLE_LIST_TOKEN",
     "86799363272b41aea54224825fe2a275",
 )
+
+HOSPITAL_BASE_SEARCH_URL = os.getenv(
+    "DOCTOR_CIRCLE_HOSPITAL_BASE_SEARCH_URL",
+    "https://api.mediportal.com.cn/health/base/findHospitalByCondition",
+)
+
+# 国家医保服务平台医院检索配置
+# 当前 hospital_detail_spider.py 实际走的是这组配置：
+# 1. NHSA_HOSPITAL_SEARCH_URL 是医院检索接口
+# 2. NHSA_APP_CODE / NHSA_APP_SECRET / NHSA_PUBLIC_KEY / NHSA_PRIVATE_KEY
+#    用来构造请求头签名和请求体加密数据
+# 医生圈的 HOSPITAL_BASE_SEARCH_URL 先保留，方便后面继续对照或回退调试。
+NHSA_HOSPITAL_SEARCH_URL = os.getenv(
+    "DOCTOR_CIRCLE_NHSA_HOSPITAL_SEARCH_URL",
+    "https://fuwu.nhsa.gov.cn/ebus/fuwu/api/nthl/api/CommQuery/queryFixedHospital",
+)
+NHSA_APP_CODE = os.getenv(
+    "DOCTOR_CIRCLE_NHSA_APP_CODE",
+    "T98HPCGN5ZVVQBS8LZQNOAEXVI9GYHKQ",
+)
+NHSA_APP_SECRET = os.getenv(
+    "DOCTOR_CIRCLE_NHSA_APP_SECRET",
+    "NMVFVILMKT13GEMD3BKPKCTBOQBPZR2P",
+)
+NHSA_PUBLIC_KEY = os.getenv(
+    "DOCTOR_CIRCLE_NHSA_PUBLIC_KEY",
+    "BEKaw3Qtc31LG/hTPHFPlriKuAn/nzTWl8LiRxLw4iQiSUIyuglptFxNkdCiNXcXvkqTH79Rh/A2sEFU6hjeK3k=",
+)
+NHSA_PRIVATE_KEY = os.getenv(
+    "DOCTOR_CIRCLE_NHSA_PRIVATE_KEY",
+    "AJxKNdmspMaPGj+onJNoQ0cgWk2E3CYFWKBJhpcJrAtC",
+)
 # CIRCLE_DETAIL_TOKEN = os.getenv(
 #     "DOCTOR_CIRCLE_DETAIL_TOKEN",
 #     "7994365551674a5eab042bcff198f0f7",
@@ -71,6 +104,8 @@ CIRCLE_LIST_TOKEN = os.getenv(
 RETRY_TIMES = 5
 DOWNLOAD_DELAY = 0.2
 CONCURRENT_REQUESTS = 30
+HOSPITAL_DETAIL_SLEEP_EVERY = int(os.getenv("DOCTOR_CIRCLE_HOSPITAL_SLEEP_EVERY", "300"))
+HOSPITAL_DETAIL_SLEEP_SECONDS = int(os.getenv("DOCTOR_CIRCLE_HOSPITAL_SLEEP_SECONDS", "30"))
 
 # 分布式配置
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"

@@ -9,6 +9,7 @@
 - 批量启动顺序：`doctor_circle/commands/crawl_all.py`
 - 采集主逻辑：`doctor_circle/spiders/doctor/`
 - 手工补 Redis 的辅助脚本：`txt_into_redis.py`
+- 医院基础信息补全脚本：`hospital_detail_spider.py`
 
 ## 采集顺序
 
@@ -47,6 +48,12 @@ python doctor_circle/start.py
 scrapy crawl_all
 ```
 
+如果你要跑医院基础信息补全脚本，先确保环境里装了国密依赖：
+
+```powershell
+python -m pip install gmssl
+```
+
 ## 主要配置
 
 全部放在 `doctor_circle/settings.py` 里，重点看这些：
@@ -63,3 +70,5 @@ scrapy crawl_all
 - 这个项目刻意保持“能顺着读”的写法，没有额外套 service / manager / workflow。
 - `_id` 默认优先使用业务主键。
 - `start.ps1` 里可以直接改 SSH 隧道命令和 Python 解释器路径。
+- `hospital_detail_spider.py` 会从医生集合提取医院名，调用国家医保服务平台公开检索接口补全医院基础信息。
+- 医院匹配规则是保守的：优先精确同名，其次只接受唯一的“前缀挂靠但尾部同名”命中，例如“首都医科大学附属北京积水潭医院”可以匹配“北京积水潭医院”。
